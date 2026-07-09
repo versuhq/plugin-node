@@ -1,0 +1,71 @@
+{
+  "name": "@versu/plugin-node",
+  "version": "1.0.0",
+  "description": "Versu Node.js Plugin",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "prebuild": "node scripts/generate-version.js",
+    "build": "tsc --project tsconfig.json --outDir dist",
+    "test": "vitest --passWithNoTests",
+    "test:coverage": "vitest --coverage --passWithNoTests",
+    "lint": "eslint 'src/**/*.ts'",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "keywords": [
+    "versu",
+    "plugin",
+    "node",
+    "npm",
+    "workspaces",
+    "semantic-versioning",
+    "conventional-commits",
+    "version-engine",
+    "dependency-cascade",
+    "monorepo"
+  ],
+  "author": "tvcsantos",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/versuhq/plugin-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/versuhq/plugin-node/issues"
+  },
+  "homepage": "https://github.com/versuhq/plugin-node#readme",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "yaml": "^2.8.1"
+  },
+  "peerDependencies": {
+    "@versu/core": "^3.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.2",
+    "@types/semver": "^7.7.1",
+    "@versu/core": "^3.1.1",
+    "@vitest/coverage-v8": "^4.1.9",
+    "eslint": "^10.5.0",
+    "prettier": "^3.8.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.1",
+    "vitest": "^4.1.9"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true
+  }
+}
