@@ -28,6 +28,3 @@ coverage/
 .env.*.local
 
 dist/
-!packages/action/dist/
-
-docs-vitepress/
