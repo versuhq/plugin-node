@@ -1,0 +1,96 @@
+name: Release (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Preview the release without writing or pushing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # Full history for commit analysis
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Install Versu Node Plugin
+        run: npm i -g @versu/plugin-node
+
+      - name: Run Versu
+        id: versu
+        uses: versuhq/versu@v3
+        with:
+          strip-module-prefix: true
+          tag-version-prefix: v
+          dry-run: ${{ inputs.dry-run }}
+
+      - name: Create GitHub releases
+        if: steps.versu.outputs.bumped == 'true' && !inputs.dry-run
+        uses: actions/github-script@v9
+        env:
+          CREATED_TAGS: ${{ steps.versu.outputs.created-tags }}
+          NOTES_PATHS: ${{ steps.versu.outputs.release-notes-paths }}
+        with:
+          script: |
+            const fs = require("fs");
+
+            const createdTags = JSON.parse(process.env.CREATED_TAGS);
+            const notesPaths = JSON.parse(process.env.NOTES_PATHS);
+
+            for (const { moduleId, tag } of createdTags) {
+              const notes = notesPaths.find((entry) => entry.moduleId === moduleId);
+
+              await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: tag,
+                name: tag,
+                body: notes ? fs.readFileSync(notes.path, "utf8") : undefined,
+                // Fall back to GitHub's auto-generated notes if none were rendered
+                generate_release_notes: !notes,
+              });
+            }
+
+      # Tags pushed with GITHUB_TOKEN don't trigger tag workflows,
+      # so publishing is dispatched explicitly for each created tag.
+      - name: Trigger publish
+        if: steps.versu.outputs.bumped == 'true' && !inputs.dry-run
+        uses: actions/github-script@v9
+        env:
+          CREATED_TAGS: ${{ steps.versu.outputs.created-tags }}
+        with:
+          script: |
+            const createdTags = JSON.parse(process.env.CREATED_TAGS);
+
+            for (const { tag } of createdTags) {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: "dispatch-publish.yml",
+                ref: tag,
+              });
+            }

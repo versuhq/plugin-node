@@ -10,7 +10,6 @@
     }
   },
   "scripts": {
-    "prebuild": "node scripts/generate-version.js",
     "build": "tsc --project tsconfig.json --outDir dist",
     "test": "vitest --passWithNoTests",
     "test:coverage": "vitest --coverage --passWithNoTests",
@@ -48,13 +47,13 @@
     "yaml": "^2.8.1"
   },
   "peerDependencies": {
-    "@versu/core": "^3.1.1"
+    "@versu/core": "^3.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.13.2",
     "@types/semver": "^7.7.1",
-    "@versu/core": "^3.1.1",
+    "@versu/core": "^3.1.2",
     "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^10.5.0",
     "prettier": "^3.8.4",

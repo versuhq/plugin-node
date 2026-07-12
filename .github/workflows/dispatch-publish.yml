@@ -1,14 +1,11 @@
-name: Release
+name: Publish (Manual)
 
 on:
-  push:
-    tags:
-      - "v*.*.*"   # e.g. v1.0.0, v0.3.2
-
-  workflow_dispatch: {}  # optional manual trigger
+  workflow_dispatch: {}  # dispatched by the Release workflow after a bump
 
 jobs:
-  release:
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
 
     permissions:
