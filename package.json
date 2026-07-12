@@ -1,6 +1,6 @@
 {
   "name": "@versu/plugin-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Versu Node.js Plugin",
   "type": "module",
   "main": "dist/index.js",

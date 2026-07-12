@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [1.0.2](https://github.com/versuhq/plugin-node/compare/v1.0.1...v1.0.2) - 2026-07-12
+
+### 📝 Documentation
+
+- Add license to readme ([b59755b](https://github.com/versuhq/plugin-node/commit/b59755bf425d861a759b8b808aa2e75c4b2ef036))
+
 ## [1.0.1](https://github.com/versuhq/plugin-node/compare/v1.0.0...v1.0.1) - 2026-07-12
 
 ### 📝 Documentation
