@@ -52,3 +52,7 @@ Dependencies between workspace packages (`dependencies`, `devDependencies`, `pee
   - the `version` field of a module's `package.json` when the module declares a version.
   - internal dependency ranges pointing at renumbered workspace packages, preserving the range operator and the `workspace:` protocol (e.g. `^1.2.3` → `^2.0.0`, `workspace:~1.2.3` → `workspace:~2.0.0`).
 - Specs without a concrete version are left untouched: `*`, `workspace:*`, `workspace:^`, `workspace:~`, `file:`, `link:`, git/url specs and compound ranges.
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
