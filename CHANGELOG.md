@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [1.0.4](https://github.com/versuhq/plugin-node/compare/v1.0.3...v1.0.4) - 2026-07-14
+
+### 🤖 Build
+
+- Update core to 3.2.0 ([7aafcab](https://github.com/versuhq/plugin-node/commit/7aafcabf8d2723c1e0a80df05307fcd7dd39c00a))
+
 ## [1.0.3](https://github.com/versuhq/plugin-node/compare/v1.0.2...v1.0.3) - 2026-07-14
 
 ### 🔁 CI
