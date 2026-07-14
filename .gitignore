@@ -27,4 +27,6 @@ coverage/
 .env.local
 .env.*.local
 
+/src/utils/version.ts
+
 dist/
