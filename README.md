@@ -47,16 +47,25 @@ Dependencies between workspace packages (`dependencies`, `devDependencies`, `pee
 
 ## Notes
 
-- Module IDs follow Gradle-style notation (e.g., `:` for root, `:packages:core`).
-- The plugin updates:
-  - the `version` field of a module's `package.json` when the module declares a version.
-  - internal dependency ranges pointing at renumbered workspace packages, preserving the range operator and the `workspace:` protocol (e.g. `^1.2.3` → `^2.0.0`, `workspace:~1.2.3` → `workspace:~2.0.0`).
-- Specs without a concrete version are left untouched: `*`, `workspace:*`, `workspace:^`, `workspace:~`, `file:`, `link:`, git/url specs and compound ranges.
-- After manifest changes, existing npm lockfiles (`package-lock.json` or `npm-shrinkwrap.json`) are synchronized using `npm install --package-lock-only --ignore-scripts --no-audit --no-fund`.
-- Existing pnpm lockfiles (`pnpm-lock.yaml`) are synchronized using `pnpm install --lockfile-only --ignore-scripts --no-frozen-lockfile`, including in CI where frozen lockfiles are normally enforced.
-- Existing Yarn lockfiles (`yarn.lock`) are synchronized using the project's Yarn executable. Yarn 3+ uses `install --mode=update-lockfile`, with immutable installs and lifecycle scripts disabled. Yarn Classic (v1) and Yarn 2 require a full install because they lack lockfile-only mode; scripts are disabled and lockfile updates are allowed.
-- Synchronization includes shared root lockfiles for workspace changes. The corresponding package manager must be available on `PATH`; synchronization failures stop the update rather than leaving a successful release with a stale lockfile. Lockfile synchronization is skipped in directories without an existing lockfile for that package manager.
-- Each updater checks for its own lockfile before running. If multiple package-manager lockfile types are present, all of them are synchronized.
+### Version updates
+
+- Module IDs use Gradle-style notation: `:` for the repository root and `:packages:core` for a nested workspace package.
+- A module's `package.json` `version` is updated only when that module already declares one.
+- Internal dependencies in `dependencies`, `devDependencies`, `peerDependencies`, and `optionalDependencies` are updated when they refer to a package whose version is changing. Simple version ranges keep their operator and `workspace:` prefix (for example, `^1.2.3` becomes `^2.0.0`, and `workspace:~1.2.3` becomes `workspace:~2.0.0`).
+- Specs without a single concrete version are left unchanged. This includes `*`, `workspace:*`, `workspace:^`, `workspace:~`, `file:`, `link:`, git and URL specs, and compound ranges.
+
+### Lockfile synchronization
+
+After a manifest changes, the plugin synchronizes any matching lockfile that already exists. Workspace changes also check the shared repository-root lockfiles.
+
+| Lockfile | Synchronization command |
+| --- | --- |
+| `package-lock.json`, `npm-shrinkwrap.json` | `npm install --package-lock-only --ignore-scripts --no-audit --no-fund` |
+| `pnpm-lock.yaml` | `pnpm install --lockfile-only --ignore-scripts --no-frozen-lockfile` |
+| `yarn.lock` (Yarn 3+) | `yarn install --mode=update-lockfile`, with immutable installs and lifecycle scripts disabled |
+| `yarn.lock` (Yarn Classic / v1 or Yarn 2) | Full `yarn install`, because these versions do not provide lockfile-only mode; lifecycle scripts are disabled and lockfile updates are allowed |
+
+The relevant package manager must be available on `PATH`. If synchronization fails, the update fails rather than leaving changed manifests with stale lockfiles. When more than one lockfile type is present, each matching updater runs; directories without that updater's lockfile are skipped.
 
 ## 📄 License
 
