@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [1.0.6](https://github.com/versuhq/plugin-node/compare/v1.0.5...v1.0.6) - 2026-10-12
+
+### 🔁 CI
+
+- Fix ci publishing ([#2](https://github.com/versuhq/plugin-node/issues/2)) ([323ced0](https://github.com/versuhq/plugin-node/commit/323ced085a4b193564187bc72dd3b65fd65ffbed))
+
 ## [1.0.5](https://github.com/versuhq/plugin-node/compare/v1.0.4...v1.0.5) - 2026-10-12
 
 ### 🐛 Bug Fixes
