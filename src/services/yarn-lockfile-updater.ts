@@ -1,10 +1,8 @@
 import { exists } from "@versu/core";
 import { join } from "path";
 import { YARN_LOCKFILE } from "../constants.js";
-import {
-  runPackageManagerCommand,
-  type LockfileUpdater,
-} from "./lockfile-updater.js";
+import { runPackageManagerCommand } from "../utils/package-manager.js";
+import type { LockfileUpdater } from "./lockfile-updater.js";
 
 const YARN_VERSION_PATTERN = /^(\d+)\.\d+\.\d+(?:[-+].*)?$/;
 
