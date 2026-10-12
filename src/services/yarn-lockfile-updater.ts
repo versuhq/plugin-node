@@ -6,6 +6,8 @@ import {
   type LockfileUpdater,
 } from "./lockfile-updater.js";
 
+const YARN_VERSION_PATTERN = /^(\d+)\.\d+\.\d+(?:[-+].*)?$/;
+
 export class YarnLockfileUpdater implements LockfileUpdater {
   async update(directory: string): Promise<void> {
     if (!(await exists(join(directory, YARN_LOCKFILE)))) return;
@@ -15,7 +17,7 @@ export class YarnLockfileUpdater implements LockfileUpdater {
       ["--version"],
       directory,
     );
-    const majorVersion = /^(\d+)\.\d+\.\d+(?:[-+].*)?$/.exec(version)?.[1];
+    const majorVersion = YARN_VERSION_PATTERN.exec(version)?.[1];
     if (!majorVersion || Number(majorVersion) < 1) {
       throw new Error(`Unsupported Yarn version "${version}" in ${directory}`);
     }
