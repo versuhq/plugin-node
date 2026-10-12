@@ -77,9 +77,14 @@ describe('NodeVersionUpdateStrategy', () => {
 
   beforeEach(async () => {
     projectRoot = await mkdtemp(join(tmpdir(), 'plugin-node-update-test-'));
+    const npmConfigPath = join(projectRoot, '.npmrc');
+    await writeFile(npmConfigPath, '');
+    vi.stubEnv('NPM_CONFIG_USERCONFIG', npmConfigPath);
+    vi.stubEnv('npm_config_userconfig', npmConfigPath);
   });
 
   afterEach(async () => {
+    vi.unstubAllEnvs();
     await rm(projectRoot, { recursive: true, force: true });
   });
 
