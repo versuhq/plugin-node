@@ -204,7 +204,7 @@ describe('NodeVersionUpdateStrategy', () => {
 
     await expect((await createStrategy(projectRoot, registry))
       .writeVersionUpdates(new Map([[':', '1.1.0']])))
-      .rejects.toThrow('Failed to synchronize yarn lockfile');
+      .rejects.toThrow('Failed to run yarn install');
   }, 15000);
 
   it('should synchronize pnpm workspace dependency specifiers and permit a frozen install', async () => {
@@ -312,7 +312,7 @@ describe('NodeVersionUpdateStrategy', () => {
 
     await expect((await createStrategy(projectRoot, registry))
       .writeVersionUpdates(new Map([[':', '1.1.0']])))
-      .rejects.toThrow('Failed to synchronize pnpm lockfile');
+      .rejects.toThrow('Failed to run pnpm install');
   }, 15000);
 
   it.each([
@@ -462,7 +462,7 @@ describe('NodeVersionUpdateStrategy', () => {
 
     await expect((await createStrategy(projectRoot, registry))
       .writeVersionUpdates(new Map([[':', '1.1.0']])))
-      .rejects.toThrow('Failed to synchronize npm lockfile');
+      .rejects.toThrow('Failed to run npm --prefix . install');
   }, 15000);
 
   it('should update module versions and internal dependency ranges', async () => {

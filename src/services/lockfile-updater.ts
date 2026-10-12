@@ -4,7 +4,7 @@ export interface LockfileUpdater {
   update(directory: string): Promise<void>;
 }
 
-export async function synchronizeLockfile(
+export async function runPackageManagerCommand(
   packageManager: string,
   args: string[],
   directory: string,
@@ -18,7 +18,7 @@ export async function synchronizeLockfile(
     return stdout.trim();
   } catch (error) {
     throw new Error(
-      `Failed to synchronize ${packageManager} lockfile in ${directory}: ${
+      `Failed to run ${packageManager} ${args.join(" ")} in ${directory}: ${
         error instanceof Error ? error.message : String(error)
       }`,
       { cause: error },
