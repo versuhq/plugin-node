@@ -44,6 +44,7 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
+    "execa": "^10.1.0",
     "fast-glob": "^3.3.3",
     "yaml": "^2.8.1"
   },
@@ -57,10 +58,14 @@
     "@versu/core": "^3.2.0",
     "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^10.5.0",
+    "pnpm": "^11.5.1",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.9",
+    "yarn-classic": "npm:yarn@^1.22.22",
+    "yarn-modern": "npm:@yarnpkg/cli-dist@^4.18.1",
+    "yarn-v2": "npm:@yarnpkg/cli-dist@2.4.2"
   },
   "engines": {
     "node": ">=24"

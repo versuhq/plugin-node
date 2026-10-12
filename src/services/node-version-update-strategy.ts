@@ -1,7 +1,8 @@
 import { readFile, writeFile } from "fs/promises";
-import { join } from "path";
+import { dirname, join } from "path";
 import type { ModuleRegistry, VersionUpdateStrategy } from "@versu/core";
 import { NODE_PACKAGE_FILE } from "../constants.js";
+import type { LockfileUpdater } from "./lockfile-updater.js";
 import {
   DEPENDENCY_FIELDS,
   type PackageManifest,
@@ -10,18 +11,21 @@ import {
 const WORKSPACE_PROTOCOL = "workspace:";
 
 /** Matches simple pinned ranges: an optional ^/~ operator followed by a single version. */
-const PINNED_RANGE_PATTERN = /^([\^~]?)\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?(?:\+[0-9A-Za-z-.]+)?$/;
+const PINNED_RANGE_PATTERN =
+  /^([\^~]?)\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?(?:\+[0-9A-Za-z-.]+)?$/;
 
 export class NodeVersionUpdateStrategy implements VersionUpdateStrategy {
   constructor(
     private readonly repoRoot: string,
     private readonly moduleRegistry: ModuleRegistry,
+    private readonly lockfileUpdaters: readonly LockfileUpdater[],
   ) {}
 
   async writeVersionUpdates(
     moduleVersions: Map<string, string>,
   ): Promise<void> {
     const updatedPackages = new Map<string, string>();
+    const changedDirectories = new Set<string>();
 
     for (const [moduleId, newVersion] of moduleVersions) {
       const module = this.moduleRegistry.getModule(moduleId);
@@ -42,7 +46,25 @@ export class NodeVersionUpdateStrategy implements VersionUpdateStrategy {
           ? moduleNewVersion
           : undefined;
 
-      await this.updateManifest(packageJsonPath, projectVersion, updatedPackages);
+      if (
+        await this.updateManifest(
+          packageJsonPath,
+          projectVersion,
+          updatedPackages,
+        )
+      ) {
+        changedDirectories.add(dirname(packageJsonPath));
+      }
+    }
+
+    if (changedDirectories.size === 0) return;
+
+    // Workspace changes also affect the shared lockfile at the repository root.
+    changedDirectories.add(this.repoRoot);
+    for (const directory of changedDirectories) {
+      for (const updater of this.lockfileUpdaters) {
+        await updater.update(directory);
+      }
     }
   }
 
@@ -50,7 +72,7 @@ export class NodeVersionUpdateStrategy implements VersionUpdateStrategy {
     packageJsonPath: string,
     projectVersion: string | undefined,
     updatedPackages: Map<string, string>,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const content = await readFile(packageJsonPath, "utf8");
     const manifest = JSON.parse(content) as PackageManifest;
     let changed = false;
@@ -76,12 +98,14 @@ export class NodeVersionUpdateStrategy implements VersionUpdateStrategy {
       }
     }
 
-    if (!changed) return;
+    if (!changed) return false;
 
     const indent = detectIndent(content);
     const trailingNewline = content.endsWith("\n") ? "\n" : "";
-    const updatedContent = JSON.stringify(manifest, null, indent) + trailingNewline;
+    const updatedContent =
+      JSON.stringify(manifest, null, indent) + trailingNewline;
     await writeFile(packageJsonPath, updatedContent, "utf8");
+    return true;
   }
 }
 
