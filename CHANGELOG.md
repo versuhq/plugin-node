@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [1.0.5](https://github.com/versuhq/plugin-node/compare/v1.0.4...v1.0.5) - 2026-10-12
+
+### 🐛 Bug Fixes
+
+- Fix lock out of sync ([#1](https://github.com/versuhq/plugin-node/issues/1)) ([b4ab2b5](https://github.com/versuhq/plugin-node/commit/b4ab2b5679acee78244879b767283aec328af826))
+
 ## [1.0.4](https://github.com/versuhq/plugin-node/compare/v1.0.3...v1.0.4) - 2026-07-14
 
 ### 🤖 Build
