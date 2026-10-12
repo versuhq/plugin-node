@@ -6,6 +6,9 @@ import type {
 } from "@versu/core";
 import { NodeModuleDetector } from "./node-module-detector.js";
 import { NodeVersionUpdateStrategy } from "./node-version-update-strategy.js";
+import { NpmLockfileUpdater } from "./npm-lockfile-updater.js";
+import { PnpmLockfileUpdater } from "./pnpm-lockfile-updater.js";
+import { YarnLockfileUpdater } from "./yarn-lockfile-updater.js";
 
 /**
  * Factory for creating Node.js-specific module system components.
@@ -21,6 +24,10 @@ export class NodeModuleSystemFactory implements ModuleSystemFactory {
   async createVersionUpdateStrategy(
     moduleRegistry: ModuleRegistry,
   ): Promise<VersionUpdateStrategy> {
-    return new NodeVersionUpdateStrategy(this.repoRoot, moduleRegistry);
+    return new NodeVersionUpdateStrategy(this.repoRoot, moduleRegistry, [
+      new NpmLockfileUpdater(),
+      new PnpmLockfileUpdater(),
+      new YarnLockfileUpdater(),
+    ]);
   }
 }

@@ -19,11 +19,11 @@ npm install @versu/core @versu/plugin-node
 Once installed, the plugin is discovered automatically from `node_modules` (or list it explicitly in the `plugins` array of your `versu.config.js`):
 
 ```typescript
-import { VersuRunner } from '@versu/core';
+import { VersuRunner } from "@versu/core";
 
 const runner = new VersuRunner({
-  repoRoot: '/path/to/repository',
-  adapter: 'node', // Optional - auto-detected
+  repoRoot: "/path/to/repository",
+  adapter: "node", // Optional - auto-detected
   // ...other options as needed
 });
 
@@ -52,6 +52,11 @@ Dependencies between workspace packages (`dependencies`, `devDependencies`, `pee
   - the `version` field of a module's `package.json` when the module declares a version.
   - internal dependency ranges pointing at renumbered workspace packages, preserving the range operator and the `workspace:` protocol (e.g. `^1.2.3` → `^2.0.0`, `workspace:~1.2.3` → `workspace:~2.0.0`).
 - Specs without a concrete version are left untouched: `*`, `workspace:*`, `workspace:^`, `workspace:~`, `file:`, `link:`, git/url specs and compound ranges.
+- After manifest changes, existing npm lockfiles (`package-lock.json` or `npm-shrinkwrap.json`) are synchronized using `npm install --package-lock-only --ignore-scripts --no-audit --no-fund`.
+- Existing pnpm lockfiles (`pnpm-lock.yaml`) are synchronized using `pnpm install --lockfile-only --ignore-scripts --no-frozen-lockfile`, including in CI where frozen lockfiles are normally enforced.
+- Existing Yarn lockfiles (`yarn.lock`) are synchronized using the project's Yarn executable. Yarn 3+ uses `install --mode=update-lockfile`, with immutable installs and lifecycle scripts disabled. Yarn Classic (v1) and Yarn 2 require a full install because they lack lockfile-only mode; scripts are disabled and lockfile updates are allowed.
+- Synchronization includes shared root lockfiles for workspace changes. The corresponding package manager must be available on `PATH`; synchronization failures stop the update rather than leaving a successful release with a stale lockfile. Lockfile synchronization is skipped in directories without an existing lockfile for that package manager.
+- Each updater checks for its own lockfile before running. If multiple package-manager lockfile types are present, all of them are synchronized.
 
 ## 📄 License
 
